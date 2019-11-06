@@ -29,7 +29,17 @@ data/
 scripts
 src/*.txt
 src/cmake
-src/python
+# Just for python folder ...
+src/python/doc
+src/python/example
+src/python/gudhi
+src/python/include/*
+src/python/test
+src/python/CMakeLists.txt
+src/python/CONVENTIONS
+src/python/README
+src/python/setup.py.in
+
 src/*.cmake.in
 src/Hasse_complex
 src/Persistence_representations
@@ -43,3 +53,9 @@ src/Bottleneck_distance
 src/Contraction
 src/GudhUI
 src/Nerve_GIC
+
+# Exceptions
+!src/python/include/Cubical_complex_interface.h
+!src/python/include/Persistent_cohomology_interface.h
+!src/python/include/Simplex_tree_interface.h
+
