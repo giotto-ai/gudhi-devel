@@ -47,7 +47,7 @@ src/Skeleton_blocker
 src/Toplex_map
 src/patial_searching
 src/Tangential_complex
-src/Witness_complex
+# src/Witness_complex
 src/Alpha_complex
 src/Bottleneck_distance
 src/Contraction
@@ -58,4 +58,6 @@ src/Nerve_GIC
 !src/python/include/Cubical_complex_interface.h
 !src/python/include/Persistent_cohomology_interface.h
 !src/python/include/Simplex_tree_interface.h
-
+!src/python/include/Strong_witness_complex_interface.h
+!src/python/include/Witness_complex_interface.h
+!src/python/include/Rips_complex_interface.h
