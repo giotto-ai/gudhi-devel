@@ -288,10 +288,7 @@ class Persistent_cohomology {
     // with multiplicity. We used to sum the coefficients directly in
     // annotations_in_boundary by using a map, we now do it later.
     typedef std::pair<Column *, int> annotation_t;
-#ifdef GUDHI_CAN_USE_CXX11_THREAD_LOCAL
-    thread_local
-#endif  // GUDHI_CAN_USE_CXX11_THREAD_LOCAL
-    std::vector<annotation_t> annotations_in_boundary;
+    thread_local std::vector<annotation_t> annotations_in_boundary;
     annotations_in_boundary.clear();
     int sign = 1 - 2 * (dim_sigma % 2);  // \in {-1,1} provides the sign in the
                                          // alternate sum in the boundary.
@@ -564,35 +561,22 @@ class Persistent_cohomology {
   void output_diagram(std::ostream& ostream = std::cout) {
     cmp_intervals_by_length cmp(cpx_);
     std::sort(std::begin(persistent_pairs_), std::end(persistent_pairs_), cmp);
-    bool has_infinity = std::numeric_limits<Filtration_value>::has_infinity;
     for (auto pair : persistent_pairs_) {
-      // Special case on windows, inf is "1.#INF" (cf. unitary tests and R package TDA)
-      if (has_infinity && cpx_->filtration(get<1>(pair)) == std::numeric_limits<Filtration_value>::infinity()) {
-        ostream << get<2>(pair) << "  " << cpx_->dimension(get<0>(pair)) << " "
-          << cpx_->filtration(get<0>(pair)) << " inf " << std::endl;
-      } else {
-        ostream << get<2>(pair) << "  " << cpx_->dimension(get<0>(pair)) << " "
-          << cpx_->filtration(get<0>(pair)) << " "
-          << cpx_->filtration(get<1>(pair)) << " " << std::endl;
-      }
+      ostream << get<2>(pair) << "  " << cpx_->dimension(get<0>(pair)) << " "
+        << cpx_->filtration(get<0>(pair)) << " "
+        << cpx_->filtration(get<1>(pair)) << " " << std::endl;
     }
   }
 
   void write_output_diagram(std::string diagram_name) {
     std::ofstream diagram_out(diagram_name.c_str());
+    diagram_out.exceptions(diagram_out.failbit);
     cmp_intervals_by_length cmp(cpx_);
     std::sort(std::begin(persistent_pairs_), std::end(persistent_pairs_), cmp);
-    bool has_infinity = std::numeric_limits<Filtration_value>::has_infinity;
     for (auto pair : persistent_pairs_) {
-      // Special case on windows, inf is "1.#INF"
-      if (has_infinity && cpx_->filtration(get<1>(pair)) == std::numeric_limits<Filtration_value>::infinity()) {
-        diagram_out << cpx_->dimension(get<0>(pair)) << " "
-              << cpx_->filtration(get<0>(pair)) << " inf" << std::endl;
-      } else {
-        diagram_out << cpx_->dimension(get<0>(pair)) << " "
-              << cpx_->filtration(get<0>(pair)) << " "
-              << cpx_->filtration(get<1>(pair)) << std::endl;
-      }
+      diagram_out << cpx_->dimension(get<0>(pair)) << " "
+            << cpx_->filtration(get<0>(pair)) << " "
+            << cpx_->filtration(get<1>(pair)) << std::endl;
     }
   }
 
@@ -600,8 +584,10 @@ class Persistent_cohomology {
    * @return A vector of Betti numbers.
    */
   std::vector<int> betti_numbers() const {
+    // Don't allocate a vector of negative size for an empty complex
+    int siz = std::max(dim_max_, 0);
     // Init Betti numbers vector with zeros until Simplicial complex dimension
-    std::vector<int> betti_numbers(dim_max_, 0);
+    std::vector<int> betti_numbers(siz);
 
     for (auto pair : persistent_pairs_) {
       // Count never ended persistence intervals
@@ -639,8 +625,10 @@ class Persistent_cohomology {
    * @return A vector of persistent Betti numbers.
    */
   std::vector<int> persistent_betti_numbers(Filtration_value from, Filtration_value to) const {
+    // Don't allocate a vector of negative size for an empty complex
+    int siz = std::max(dim_max_, 0);
     // Init Betti numbers vector with zeros until Simplicial complex dimension
-    std::vector<int> betti_numbers(dim_max_, 0);
+    std::vector<int> betti_numbers(siz);
     for (auto pair : persistent_pairs_) {
       // Count persistence intervals that covers the given interval
       // null_simplex test : if the function is called with to=+infinity, we still get something useful. And it will

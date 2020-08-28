@@ -4,8 +4,8 @@
 \image html "Gudhi_banner.png"
 <br><br><br><br>
 
-## Complexes {#Complexes}
-### Cubical complex
+## Data structures for cell complexes {#Complexes}
+### Cubical complexes
  
 <table>
   <tr>
@@ -29,9 +29,114 @@
  </tr>
 </table>
 
-### Simplicial complex
+### Simplicial complexes
 
-#### Alpha complex
+#### Simplex tree
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "Simplex_tree_representation.png"
+    </td>
+    <td width="50%">
+    The simplex tree is an efficient and flexible
+ data structure for representing general (filtered) simplicial complexes. The data structure
+ is described in \cite boissonnatmariasimplextreealgorithmica .
+    </td>
+    <td width="15%">
+      <b>Author:</b> Cl&eacute;ment Maria<br>
+      <b>Introduced in:</b> GUDHI 1.0.0<br>
+      <b>Copyright:</b> MIT<br>
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref simplex_tree
+    </td>
+ </tr>
+</table>
+
+#### Toplex Map
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "map.png"
+    </td>
+    <td width="50%">
+    The Toplex map data structure is composed firstly of a raw storage of toplices (the maximal simplices)
+    and secondly of a map which associate any vertex to a set of pointers toward all toplices
+    containing this vertex.
+    </td>
+    <td width="15%">
+      <b>Author:</b> Fran&ccedil;ois Godi<br>
+      <b>Introduced in:</b> GUDHI 2.1.0<br>
+      <b>Copyright:</b> MIT<br>
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref toplex_map
+    </td>
+ </tr>
+</table>
+
+#### Skeleton blocker
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "ds_representation.png"
+    </td>
+    <td width="50%">
+    The Skeleton-Blocker data-structure proposes a light encoding for simplicial complexes by storing only an *implicit*
+    representation of its simplices \cite socg_blockers_2011,\cite blockers2012. Intuitively, it just stores the
+    1-skeleton of a simplicial complex with a graph and the set of its "missing faces" that is very small in practice.
+    This data-structure handles all simplicial complexes operations such as simplex enumeration or simplex removal but
+    operations that are particularly efficient are operations that do not require simplex enumeration such as edge
+    iteration, link computation or simplex contraction.
+    </td>
+    <td width="15%">
+      <b>Author:</b> David Salinas<br>
+      <b>Introduced in:</b> GUDHI 1.1.0<br>
+      <b>Copyright:</b> MIT<br>
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref skbl
+    </td>
+ </tr>
+</table>
+
+#### Basic operation: contraction
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "sphere_contraction_representation.png"
+    </td>
+    <td width="50%">
+    The purpose of this package is to offer a user-friendly interface for edge contraction simplification of huge
+    simplicial complexes. It uses the \ref skbl data-structure whose size remains small  during simplification of most
+    used geometrical complexes of topological data analysis such as the Rips or the Delaunay complexes. In practice,
+    the size of this data-structure is even much lower than the total number of simplices.
+    </td>
+    <td width="15%">
+      <b>Author:</b> David Salinas<br>
+      <b>Introduced in:</b> GUDHI 1.1.0<br>
+      <b>Copyright:</b> MIT [(LGPL v3)](../../licensing/)<br>
+      <b>Requires:</b> \ref cgal &ge; 4.11.0
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref contr
+    </td>
+ </tr>
+</table>
+
+## Filtrations and reconstructions {#FiltrationsReconstructions}
+### Alpha complex
 
 <table>
   <tr>
@@ -43,8 +148,9 @@
     The filtration value of each simplex is computed as the square of the circumradius of the simplex if the
     circumsphere is empty (the simplex is then said to be Gabriel), and as the minimum of the filtration
     values of the codimension 1 cofaces that make it not Gabriel otherwise.
-    All simplices that have a filtration value strictly greater than a given alpha squared value are not inserted into
-    the complex.<br>
+    All simplices that have a filtration value \f$ > \alpha^2 \f$ are removed from the Delaunay complex
+    when creating the simplicial complex if it is specified.<br>
+    For performances reasons, it is advised to use \ref cgal &ge; 5.0.0.
     </td>
     <td width="15%">
       <b>Author:</b> Vincent Rouvreau<br>
@@ -60,7 +166,7 @@
  </tr>
 </table>
 
-#### Čech complex
+### Čech complex
 
 <table>
  <tr>
@@ -85,7 +191,7 @@
  </tr>
 </table>
 
-#### Rips complex
+### Rips complex
 
 <table>
   <tr>
@@ -111,7 +217,37 @@
  </tr>
 </table>
 
-#### Witness complex
+### Edge collapse
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "dominated_edge.png"
+    </td>
+    <td width="50%">
+    Edge collapse is able to reduce any flag filtration to a smaller flag filtration with the same persistence, using
+    only the 1-skeletons of a simplicial complex.
+    The reduction is exact and the persistence homology of the reduced sequence is identical to the persistence
+    homology of the input sequence. The resulting method is simple and extremely efficient.
+
+    Computation of edge collapse and persistent homology of a filtered flag complex via edge collapse as described in
+    \cite edgecollapsesocg2020.
+    </td>
+    <td width="15%">
+      <b>Author:</b> Siddharth Pritam<br>
+      <b>Introduced in:</b> GUDHI 3.3.0<br>
+      <b>Copyright:</b> MIT<br>
+      <b>Requires:</b> \ref eigen
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref edge_collapse
+    </td>
+ </tr>
+</table>
+
+### Witness complex
 
 <table>
   <tr>
@@ -162,150 +298,6 @@
  </tr>
 </table>
 
-## Data structures and basic operations {#DataStructuresAndBasicOperations}
-
-### Data structures
-
-#### Simplex tree
-<table>
-  <tr>
-    <td width="35%" rowspan=2>
-      \image html "Simplex_tree_representation.png"
-    </td>
-    <td width="50%">
-    The simplex tree is an efficient and flexible
- data structure for representing general (filtered) simplicial complexes. The data structure
- is described in \cite boissonnatmariasimplextreealgorithmica .
-    </td>
-    <td width="15%">
-      <b>Author:</b> Cl&eacute;ment Maria<br>
-      <b>Introduced in:</b> GUDHI 1.0.0<br>
-      <b>Copyright:</b> MIT<br>
-    </td>
- </tr>
- <tr>
-    <td colspan=2 height="25">
-    <b>User manual:</b> \ref simplex_tree
-    </td>
- </tr>
-</table>
-
-#### Skeleton blocker
-
-<table>
-  <tr>
-    <td width="35%" rowspan=2>
-      \image html "ds_representation.png"
-    </td>
-    <td width="50%">
-    The Skeleton-Blocker data-structure proposes a light encoding for simplicial complexes by storing only an *implicit*
-    representation of its simplices \cite socg_blockers_2011,\cite blockers2012. Intuitively, it just stores the
-    1-skeleton of a simplicial complex with a graph and the set of its "missing faces" that is very small in practice.
-    This data-structure handles all simplicial complexes operations such as simplex enumeration or simplex removal but
-    operations that are particularly efficient are operations that do not require simplex enumeration such as edge
-    iteration, link computation or simplex contraction.
-    </td>
-    <td width="15%">
-      <b>Author:</b> David Salinas<br>
-      <b>Introduced in:</b> GUDHI 1.1.0<br>
-      <b>Copyright:</b> MIT<br>
-    </td>
- </tr>
- <tr>
-    <td colspan=2 height="25">
-    <b>User manual:</b> \ref skbl
-    </td>
- </tr>
-</table>
-
-#### Toplex Map
-
-<table>
-  <tr>
-    <td width="35%" rowspan=2>
-      \image html "map.png"
-    </td>
-    <td width="50%">
-    The Toplex map data structure is composed firstly of a raw storage of toplices (the maximal simplices)
-    and secondly of a map which associate any vertex to a set of pointers toward all toplices
-    containing this vertex.
-    </td>
-    <td width="15%">
-      <b>Author:</b> Fran&ccedil;ois Godi<br>
-      <b>Introduced in:</b> GUDHI 2.1.0<br>
-      <b>Copyright:</b> MIT<br>
-    </td>
- </tr>
- <tr>
-    <td colspan=2 height="25">
-    <b>User manual:</b> \ref toplex_map
-    </td>
- </tr>
-</table>
-
-### Basic operations
-
-#### Contraction
-
-<table>
-  <tr>
-    <td width="35%" rowspan=2>
-      \image html "sphere_contraction_representation.png"
-    </td>
-    <td width="50%">
-    The purpose of this package is to offer a user-friendly interface for edge contraction simplification of huge
-    simplicial complexes. It uses the \ref skbl data-structure whose size remains small  during simplification of most
-    used geometrical complexes of topological data analysis such as the Rips or the Delaunay complexes. In practice,
-    the size of this data-structure is even much lower than the total number of simplices.
-    </td>
-    <td width="15%">
-      <b>Author:</b> David Salinas<br>
-      <b>Introduced in:</b> GUDHI 1.1.0<br>
-      <b>Copyright:</b> MIT [(LGPL v3)](../../licensing/)<br>
-      <b>Requires:</b> \ref cgal &ge; 4.11.0
-    </td>
- </tr>
- <tr>
-    <td colspan=2 height="25">
-    <b>User manual:</b> \ref contr
-    </td>
- </tr>
-</table>
-
-## Topological descriptors computation {#TopologicalDescriptorsComputation}
-
-### Persistent Cohomology
-
-<table>
-  <tr>
-    <td width="35%" rowspan=2>
-      \image html "3DTorus_poch.png"
-    </td>
-    <td width="50%">
-    The theory of homology consists in attaching to a topological space a sequence of (homology) groups, capturing
-    global topological features like connected components, holes, cavities, etc. Persistent homology studies the
-    evolution -- birth, life and death -- of these features when the topological space is changing. Consequently, the
-    theory is essentially composed of three elements: topological spaces, their homology groups and an evolution
-    scheme.
-    Computation of persistent cohomology using the algorithm of \cite DBLP:journals/dcg/SilvaMV11 and
-    \cite DBLP:journals/corr/abs-1208-5018 and the Compressed Annotation Matrix implementation of
-    \cite DBLP:conf/esa/BoissonnatDM13 .
-    </td>
-    <td width="15%">
-      <b>Author:</b> Cl&eacute;ment Maria<br>
-      <b>Introduced in:</b> GUDHI 1.0.0<br>
-      <b>Copyright:</b> MIT<br>
-    </td>
- </tr>
- <tr>
-    <td colspan=2 height="25">
-    <b>User manual:</b> \ref persistent_cohomology
-    </td>
- </tr>
-</table>
-
-## Manifold reconstruction {#ManifoldReconstruction}
-
 ### Tangential complex
 
 <table>
@@ -330,6 +322,38 @@
  <tr>
     <td colspan=2 height="25">
     <b>User manual:</b> \ref tangential_complex
+    </td>
+ </tr>
+</table>
+
+## Topological descriptors computation {#TopologicalDescriptorsComputation}
+
+### Persistent Cohomology
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \image html "3DTorus_poch.png"
+    </td>
+    <td width="50%">
+    The theory of homology consists in attaching to a topological space a sequence of (homology) groups, capturing
+    global topological features like connected components, holes, cavities, etc. Persistent homology studies the
+    evolution -- birth, life and death -- of these features when the topological space is changing. Consequently, the
+    theory is essentially composed of three elements: topological spaces, their homology groups and an evolution
+    scheme.
+    Computation of persistent cohomology using the algorithm of \cite DBLP:journals/dcg/SilvaMV11 and
+    \cite DBLP:conf/compgeom/DeyFW14 and the Compressed Annotation Matrix implementation of
+    \cite DBLP:conf/esa/BoissonnatDM13 .
+    </td>
+    <td width="15%">
+      <b>Author:</b> Cl&eacute;ment Maria<br>
+      <b>Introduced in:</b> GUDHI 1.0.0<br>
+      <b>Copyright:</b> MIT<br>
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>User manual:</b> \ref persistent_cohomology
     </td>
  </tr>
 </table>
@@ -386,6 +410,29 @@
  <tr>
     <td colspan=2 height="25">
     <b>User manual:</b> \ref Persistence_representations
+    </td>
+ </tr>
+</table>
+
+## Point cloud utilities {#PointCloudUtils}
+
+<table>
+  <tr>
+    <td width="35%" rowspan=2>
+      \f$(x_1,\ldots,x_d)\f$
+    </td>
+    <td width="50%">
+    This contains various tools to handle point clouds: spatial searching, subsampling, etc.
+    </td>
+    <td width="15%">
+      <b>Author:</b> Clément Jamin<br>
+      <b>Introduced in:</b> GUDHI 1.3.0<br>
+      <b>Copyright:</b> MIT [(GPL v3)](../../licensing/)<br>
+    </td>
+ </tr>
+ <tr>
+    <td colspan=2 height="25">
+    <b>Manuals:</b> \ref spatial_searching, \ref subsampling
     </td>
  </tr>
 </table>
